@@ -1,11 +1,8 @@
 package example.michaelmuccio.com.todo_list_muccio;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,21 +15,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
-    LinkedList<String> mtoDoList;
-    ArrayAdapter<String> mtoDoListAdap;
-    EditText userToDoInput;
-    ListView usersList;
+    //Global Data types
     public static final int REQUEST_CODE = 16;
     public static final String DETAILS_KEY = "detailsKey";
     TextView emptyList;
     TextView mCounter;
+    EditText userToDoInput;
+    ListView usersList;
+    ArrayAdapter<String> mtoDoListAdap;
+    ArrayList<ArrayList<String>> mToDoListArrays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mtoDoList = new LinkedList<>();
-        mtoDoListAdap = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mtoDoList);
+        mToDoListArrays = new ArrayList<>();
+        mtoDoListAdap = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mToDoListArrays);
 
         usersList = (ListView) findViewById(R.id.userToDoList);
 
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Not a valid TO DO!", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    mtoDoList.add(userToDoInput.getText().toString());
+                    mToDoListArrays.add(userToDoInput.getText().toString());
                     mtoDoListAdap.notifyDataSetChanged();
                     userToDoInput.setText("");
                     changeEmptyList();
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                intent.putExtra("details", mtoDoList.get(position));
+                intent.putExtra("details", mToDoListArrays.get(position));
                 startActivityForResult(intent, 16);
 
             }
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         emptyList = (TextView) findViewById(R.id.textView);
 
-        if (mtoDoList != null) {
+        if (mToDoListArrays != null) {
             Log.d("MainActivity2", "is null?");
 
             emptyList.setText("My List:");
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //need to reference the linkedlist and adaptor
-                mtoDoList.remove(position);
+                mToDoListArrays.remove(position);
                 mtoDoListAdap.notifyDataSetChanged();
                 return true; //default was false
 
@@ -160,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     data.getStringArrayListExtra(DETAILS_KEY);
+                    Log.i("Main2Activity", "Details list: " + DETAILS_KEY);
                 }
             }
 
