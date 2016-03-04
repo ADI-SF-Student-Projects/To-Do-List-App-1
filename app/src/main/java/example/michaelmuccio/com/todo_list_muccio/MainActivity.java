@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     //Global Data types
     public static final int REQUEST_CODE = 16;
     public static final String DETAILS_KEY = "detailsKey";
+    public static final String DATA_INDEX_KEY = "myDataIndexKey";
+    public static final int ERROR_INDEX = -1;
+    public static final String THINGTODO = "details";
     private TextView emptyList;
     private TextView mCounter;
     private EditText userToDoInput;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ArrayList<String>> masterDataList;
     private ArrayList<String> mDataList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        usersList = (ListView) findViewById(R.id.userToDoList);
-        userToDoInput = (EditText) findViewById(R.id.userInput);
-
         mDataList = new ArrayList<>();
         masterDataList = new ArrayList<>();
+
+
+        usersList = (ListView) findViewById(R.id.userToDoList);
+        userToDoInput = (EditText) findViewById(R.id.userInput);
 
         //setting the Data Collection to the adaptor
         mtoDoListAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, mDataList);
@@ -58,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Not a valid TO DO!", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    masterDataList.add(userToDoInput.getText().toString());
+                    addItemToListView();
                     mtoDoListAdap.notifyDataSetChanged();
-                    userToDoInput.setText("");
+                    userToDoInput.getText().clear();
                     changeEmptyList();
                     listItemCounter();
                 }
@@ -74,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void addItemToListView(){
+
+        String userInput = userToDoInput.getText().toString();
+        mDataList.add(userInput);
+
+    }
+
     private void setOnClickListeners() {
 
         final Intent intent = new Intent(MainActivity.this, DetailActivity.class);
@@ -82,8 +94,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                intent.putExtra("details", mToDoListArrays.get(position));
-                startActivityForResult(intent, 16);
+                masterDataList.add(mDataList);
+                intent.putExtra(DATA_INDEX_KEY, position);
+                intent.putExtra(DETAILS_KEY, masterDataList.get(position));
+                intent.putExtra(THINGTODO, mDataList.get(position));
+                startActivityForResult(intent, REQUEST_CODE);
 
             }
         });
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         emptyList = (TextView) findViewById(R.id.textView);
 
-        if (mToDoListArrays != null) {
+        if (masterDataList != null) {
             Log.d("MainActivity2", "is null?");
 
             emptyList.setText("My List:");
@@ -111,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //need to reference the linkedlist and adaptor
-                mToDoListArrays.remove(position);
+                masterDataList.remove(position);
                 mtoDoListAdap.notifyDataSetChanged();
                 return true; //default was false
 

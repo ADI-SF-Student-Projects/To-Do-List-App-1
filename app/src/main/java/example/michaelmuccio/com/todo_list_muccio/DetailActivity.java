@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String THINGTODO = "details";
-    ArrayList<String> mDetails;
-    ArrayAdapter<String> mToDeatailsAdap;
+    ArrayList<String> mDetailsList;
+    ArrayList<String> tempList;
+    ArrayAdapter<String> toDetailsAdap;
     EditText userDetailInput;
     ListView usersDetails;
     TextView titleChange;
@@ -36,13 +36,20 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDetails = new ArrayList<>();
-        mToDeatailsAdap = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, mDetails);
-
         usersDetails = (ListView) findViewById(R.id.userDetailList);
-
         userDetailInput = (EditText) findViewById(R.id.userInputDetails);
-        usersDetails.setAdapter(mToDeatailsAdap);
+        titleChange = (TextView) findViewById(R.id.detailsTitle);
+        //getDataIndex();
+
+        mDetailsList = new ArrayList<>();
+        //mDetailsList = getDataArrayList();
+
+        getDataArrayList();
+
+        Log.d("this is mdetail list", "Mdetaillist" + mDetailsList);
+
+        toDetailsAdap = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, mDetailsList);
+        usersDetails.setAdapter(toDetailsAdap);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -53,18 +60,49 @@ public class DetailActivity extends AppCompatActivity {
                 if (userDetailInput.getText().toString().isEmpty()) {
                     Toast.makeText(DetailActivity.this, "Not a valid Detail", Toast.LENGTH_SHORT).show();
                 } else {
-                    mDetails.add(userDetailInput.getText().toString());
-                    mToDeatailsAdap.notifyDataSetChanged();
-                    userDetailInput.setText("");
+                    addDetailToListView();
+                    toDetailsAdap.notifyDataSetChanged();
                     changeEmptyDetailsView();
                 }
 
             }
         });
 
-        changeTitle(getIntent().getStringExtra(THINGTODO));
+        getMyTitle();
         strikeThrough();
         longPressDelete();
+
+    }
+
+    private void getMyTitle(){
+        Intent titleIntent = getIntent();
+
+        String newTitle = titleIntent.getStringExtra(MainActivity.THINGTODO);
+
+        titleChange.setText(newTitle);
+
+    }
+
+    private int getDataIndex(){
+        Intent getIndexIntent = getIntent();
+        if (getIndexIntent == null){
+            return MainActivity.ERROR_INDEX;
+        }
+
+        return getIndexIntent.getIntExtra(MainActivity.DATA_INDEX_KEY, MainActivity.ERROR_INDEX);
+
+    }
+
+    private void getDataArrayList(){
+        Intent getDataIntent = getIntent();
+
+        mDetailsList = getDataIntent.getStringArrayListExtra(MainActivity.DETAILS_KEY);
+    }
+
+    private void addDetailToListView(){
+
+        String userInput = userDetailInput.getText().toString();
+        mDetailsList.add(userInput);
 
     }
     //add strike-through capability. Imported new widget and got code from StackOverflow
@@ -89,8 +127,8 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                mDetails.remove(position);
-                mToDeatailsAdap.notifyDataSetChanged();
+                mDetailsList.remove(position);
+                toDetailsAdap.notifyDataSetChanged();
                 return true;
 
             }
@@ -98,36 +136,16 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    public String changeTitle(String title) {
-
-        titleChange = (TextView) findViewById(R.id.detailsTitle);
-
-        titleChange.setText(title);
-
-        return title;
-
-    }
-
     public void changeEmptyDetailsView() {
 
         emptyDeats = (TextView) findViewById(R.id.textView);
 
-        if (mDetails != null) {
+        if (mDetailsList != null) {
             Log.d("DetailActivity", "is null?");
 
             emptyDeats.setText("My Details: ");
 
         }
-
-    }
-
-    private ArrayList<String> getIndex(){
-        Intent getListIntent = getIntent();
-        if (getListIntent == null){
-            return null;
-        }
-
-        return getListIntent.getStringArrayListExtra(MainActivity.DETAILS_KEY, )
 
     }
 
@@ -143,8 +161,8 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        detailsIntent.putExtra(MainActivity.DETAILS_KEY, mDetails);
-        detailsIntent.putExtra(MainActivity.)
+        detailsIntent.putExtra(MainActivity.DETAILS_KEY, mDetailsList);
+        detailsIntent.putExtra(MainActivity.DATA_INDEX_KEY, getDataIndex());
         setResult(RESULT_OK, detailsIntent);
         finish();
 
