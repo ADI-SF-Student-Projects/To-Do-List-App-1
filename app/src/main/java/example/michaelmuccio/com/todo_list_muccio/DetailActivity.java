@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,10 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 
-public class Main2Activity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     public static final String THINGTODO = "details";
     ArrayList<String> mDetails;
@@ -39,7 +37,7 @@ public class Main2Activity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mDetails = new ArrayList<>();
-        mToDeatailsAdap = new ArrayAdapter<String>(Main2Activity.this, android.R.layout.simple_list_item_1, mDetails);
+        mToDeatailsAdap = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, mDetails);
 
         usersDetails = (ListView) findViewById(R.id.userDetailList);
 
@@ -53,7 +51,7 @@ public class Main2Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (userDetailInput.getText().toString().isEmpty()) {
-                    Toast.makeText(Main2Activity.this, "Not a valid Detail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, "Not a valid Detail", Toast.LENGTH_SHORT).show();
                 } else {
                     mDetails.add(userDetailInput.getText().toString());
                     mToDeatailsAdap.notifyDataSetChanged();
@@ -115,11 +113,21 @@ public class Main2Activity extends AppCompatActivity {
         emptyDeats = (TextView) findViewById(R.id.textView);
 
         if (mDetails != null) {
-            Log.d("MainActivity2", "is null?");
+            Log.d("DetailActivity", "is null?");
 
             emptyDeats.setText("My Details: ");
 
         }
+
+    }
+
+    private ArrayList<String> getIndex(){
+        Intent getListIntent = getIntent();
+        if (getListIntent == null){
+            return null;
+        }
+
+        return getListIntent.getStringArrayListExtra(MainActivity.DETAILS_KEY, )
 
     }
 
@@ -135,7 +143,8 @@ public class Main2Activity extends AppCompatActivity {
             return;
         }
 
-        detailsIntent.putStringArrayListExtra(MainActivity.DETAILS_KEY, mDetails);
+        detailsIntent.putExtra(MainActivity.DETAILS_KEY, mDetails);
+        detailsIntent.putExtra(MainActivity.)
         setResult(RESULT_OK, detailsIntent);
         finish();
 

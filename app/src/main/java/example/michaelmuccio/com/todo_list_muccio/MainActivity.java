@@ -24,12 +24,13 @@ public class MainActivity extends AppCompatActivity {
     //Global Data types
     public static final int REQUEST_CODE = 16;
     public static final String DETAILS_KEY = "detailsKey";
-    TextView emptyList;
-    TextView mCounter;
-    EditText userToDoInput;
-    ListView usersList;
-    ArrayAdapter<String> mtoDoListAdap;
-    ArrayList<ArrayList<String>> mToDoListArrays;
+    private TextView emptyList;
+    private TextView mCounter;
+    private EditText userToDoInput;
+    private ListView usersList;
+    private ArrayAdapter<String> mtoDoListAdap;
+    private ArrayList<ArrayList<String>> masterDataList;
+    private ArrayList<String> mDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mToDoListArrays = new ArrayList<>();
-        mtoDoListAdap = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mToDoListArrays);
-
         usersList = (ListView) findViewById(R.id.userToDoList);
-
         userToDoInput = (EditText) findViewById(R.id.userInput);
+
+        mDataList = new ArrayList<>();
+        masterDataList = new ArrayList<>();
+
+        //setting the Data Collection to the adaptor
+        mtoDoListAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, mDataList);
         usersList.setAdapter(mtoDoListAdap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -52,11 +55,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (userToDoInput.getText().toString().isEmpty()) {
-
                     Toast.makeText(MainActivity.this, "Not a valid TO DO!", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    mToDoListArrays.add(userToDoInput.getText().toString());
+                    masterDataList.add(userToDoInput.getText().toString());
                     mtoDoListAdap.notifyDataSetChanged();
                     userToDoInput.setText("");
                     changeEmptyList();
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setOnClickListeners() {
 
-        final Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        final Intent intent = new Intent(MainActivity.this, DetailActivity.class);
 
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     data.getStringArrayListExtra(DETAILS_KEY);
-                    Log.i("Main2Activity", "Details list: " + DETAILS_KEY);
+                    Log.i("DetailActivity", "Details list: " + DETAILS_KEY);
                 }
             }
 
