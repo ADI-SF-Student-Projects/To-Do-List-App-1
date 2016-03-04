@@ -26,6 +26,7 @@
         android:text="There are no details yet"
         android:id="@+id/textView"
         android:textAlignment="center"
+        android:textSize="12sp"
         android:layout_below="@+id/detailsTitle"/>
 
     <EditText

@@ -15,13 +15,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 
 public class Main2Activity extends AppCompatActivity {
 
     public static final String THINGTODO = "details";
-    LinkedList<String> mDetails;
+    ArrayList<String> mDetails;
     ArrayAdapter<String> mToDeatailsAdap;
     EditText userDetailInput;
     ListView usersDetails;
@@ -36,7 +38,7 @@ public class Main2Activity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDetails = new LinkedList<>();
+        mDetails = new ArrayList<>();
         mToDeatailsAdap = new ArrayAdapter<String>(Main2Activity.this, android.R.layout.simple_list_item_1, mDetails);
 
         usersDetails = (ListView) findViewById(R.id.userDetailList);
@@ -50,7 +52,7 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (userDetailInput.getText().toString().isEmpty()){
+                if (userDetailInput.getText().toString().isEmpty()) {
                     Toast.makeText(Main2Activity.this, "Not a valid Detail", Toast.LENGTH_SHORT).show();
                 } else {
                     mDetails.add(userDetailInput.getText().toString());
@@ -65,8 +67,9 @@ public class Main2Activity extends AppCompatActivity {
         changeTitle(getIntent().getStringExtra(THINGTODO));
         strikeThrough();
         longPressDelete();
-    }
 
+    }
+    //add strike-through capability. Imported new widget and got code from StackOverflow
     private void  strikeThrough(){
 
         usersDetails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,12 +117,29 @@ public class Main2Activity extends AppCompatActivity {
         if (mDetails != null) {
             Log.d("MainActivity2", "is null?");
 
-            emptyDeats.setText("My Details:");
+            emptyDeats.setText("My Details: ");
 
         }
 
     }
 
+    @Override
+    public void onBackPressed() {
+        sendDetailsListBack();
+    }
 
+    private void sendDetailsListBack(){
+        Intent detailsIntent = getIntent();
+        if (detailsIntent == null){
+            Log.i("Main2", "Null Details");
+            return;
+        }
+
+        detailsIntent.putStringArrayListExtra(MainActivity.DETAILS_KEY, mDetails);
+        setResult(RESULT_OK, detailsIntent);
+        finish();
+
+    }
 
 }
+

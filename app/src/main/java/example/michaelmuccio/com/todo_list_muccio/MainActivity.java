@@ -25,12 +25,14 @@ import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
 
-    LinkedList <String> mtoDoList;
-    ArrayAdapter <String> mtoDoListAdap;
+    LinkedList<String> mtoDoList;
+    ArrayAdapter<String> mtoDoListAdap;
     EditText userToDoInput;
     ListView usersList;
     public static final int REQUEST_CODE = 16;
+    public static final String DETAILS_KEY = "detailsKey";
     TextView emptyList;
+    TextView mCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,40 +42,40 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mtoDoList = new LinkedList<>();
-        mtoDoListAdap = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, mtoDoList);
+        mtoDoListAdap = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mtoDoList);
 
         usersList = (ListView) findViewById(R.id.userToDoList);
 
         userToDoInput = (EditText) findViewById(R.id.userInput);
         usersList.setAdapter(mtoDoListAdap);
 
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    if(userToDoInput.getText().toString().isEmpty()){
+                if (userToDoInput.getText().toString().isEmpty()) {
 
-                        Toast.makeText(MainActivity.this,"Not a valid TO DO!", Toast.LENGTH_SHORT).show();
-                    }else {
+                    Toast.makeText(MainActivity.this, "Not a valid TO DO!", Toast.LENGTH_SHORT).show();
+                } else {
 
-                        mtoDoList.add(userToDoInput.getText().toString());
-                        mtoDoListAdap.notifyDataSetChanged();
-                        userToDoInput.setText("");
-                        changeEmptyList();
-                    }
-
+                    mtoDoList.add(userToDoInput.getText().toString());
+                    mtoDoListAdap.notifyDataSetChanged();
+                    userToDoInput.setText("");
+                    changeEmptyList();
+                    listItemCounter();
                 }
-            });
+
+            }
+        });
 
 
         setOnClickListeners();
-        strikeThrough();
         longPressDelete();
 
     }
 
-    private void setOnClickListeners(){
+    private void setOnClickListeners() {
 
         final Intent intent = new Intent(MainActivity.this, Main2Activity.class);
 
@@ -101,23 +103,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //add strike-through capability. Imported new widget and got code from StackOverflow
-    private void  strikeThrough(){
-
-        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                TextView v = (TextView) view;
-
-                v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-            }
-        });
-
-    }
     //add longpress for deleting the List item completely
-    private void longPressDelete(){
+    private void longPressDelete() {
 
         //the actual listview
         usersList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -135,10 +122,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // add counter for items in list
+    public void listItemCounter() {
 
-    private static int listItemCounter(int counter){
+        mCounter = (TextView) findViewById(R.id.counterBox);
 
-        return counter;
+        mCounter.setText("Item count: " + String.valueOf(usersList.getCount()));
+        /* getting an Integer from getCount then turning it into a string for the
+        TextView
+         */
     }
 
     @Override
@@ -165,12 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == 16){
-            if(resultCode == RESULT_OK){
-
+        if (resultCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    data.getStringArrayListExtra(DETAILS_KEY);
+                }
             }
-        }
 
-        super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
