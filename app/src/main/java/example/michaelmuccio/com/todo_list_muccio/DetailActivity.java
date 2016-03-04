@@ -42,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
         //getDataIndex();
 
         mDetailsList = new ArrayList<>();
-        //mDetailsList = getDataArrayList();
 
         getDataArrayList();
 
@@ -62,6 +61,7 @@ public class DetailActivity extends AppCompatActivity {
                 } else {
                     addDetailToListView();
                     toDetailsAdap.notifyDataSetChanged();
+                    userDetailInput.getText().clear();
                     changeEmptyDetailsView();
                 }
 

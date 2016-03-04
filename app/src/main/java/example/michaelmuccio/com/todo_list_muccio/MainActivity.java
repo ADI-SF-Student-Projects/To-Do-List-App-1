@@ -27,14 +27,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String DATA_INDEX_KEY = "myDataIndexKey";
     public static final int ERROR_INDEX = -1;
     public static final String THINGTODO = "details";
-    private TextView emptyList;
+    private TextView emptyList2;
     private TextView mCounter;
     private EditText userToDoInput;
     private ListView usersList;
     private ArrayAdapter<String> mtoDoListAdap;
     private ArrayList<ArrayList<String>> masterDataList;
     private ArrayList<String> mDataList;
-
+    private ArrayList <String> emptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDataList = new ArrayList<>();
         masterDataList = new ArrayList<>();
+        emptyList = new ArrayList<>();
 
 
         usersList = (ListView) findViewById(R.id.userToDoList);
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                masterDataList.add(mDataList);
+                masterDataList.add(emptyList);
                 intent.putExtra(DATA_INDEX_KEY, position);
                 intent.putExtra(DETAILS_KEY, masterDataList.get(position));
                 intent.putExtra(THINGTODO, mDataList.get(position));
@@ -107,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeEmptyList() {
 
-        emptyList = (TextView) findViewById(R.id.textView);
+        emptyList2 = (TextView) findViewById(R.id.textView);
 
         if (masterDataList != null) {
             Log.d("MainActivity2", "is null?");
 
-            emptyList.setText("My List:");
+            emptyList2.setText("My List:");
 
         }
     }
@@ -170,11 +171,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    data.getStringArrayListExtra(DETAILS_KEY);
+
+                    ArrayList<String> tempList = data.getStringArrayListExtra(DETAILS_KEY);
                     Log.i("DetailActivity", "Details list: " + DETAILS_KEY);
+                    int index = data.getIntExtra(DATA_INDEX_KEY, ERROR_INDEX);
+                    if (index != ERROR_INDEX) {
+                        masterDataList.set(index, tempList);
+                    } else {
+                        Log.e("Main", "Index is not valid: " + index);
+                    }
                 }
             }
 
