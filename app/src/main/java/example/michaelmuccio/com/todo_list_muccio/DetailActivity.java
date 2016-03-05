@@ -20,15 +20,14 @@ import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
 
-    ArrayList<String> mDetailsList;
-    ArrayList<String> tempList;
-    ArrayAdapter<String> toDetailsAdap;
-    EditText userDetailInput;
-    ListView usersDetails;
-    TextView titleChange;
-    TextView emptyDeats;
-
-
+    private ArrayList<String> mDetailsList;
+    private ArrayList<String> tempList;
+    private ArrayAdapter<String> toDetailsAdap;
+    private EditText userDetailInput;
+    private ListView usersDetails;
+    private TextView titleChange;
+    private TextView emptyDeats;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

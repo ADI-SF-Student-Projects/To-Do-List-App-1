@@ -17,8 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-
-
 public class MainActivity extends AppCompatActivity {
 
     //Global Data types
@@ -52,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         userToDoInput = (EditText) findViewById(R.id.userInput);
 
         //setting the Data Collection to the adaptor
-        mtoDoListAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, mDataList);
+        mtoDoListAdap = new ArrayAdapter<>(MainActivity.this,
+                android.R.layout.simple_list_item_1, mDataList); //adaptor linked to my nested collection within master
         usersList.setAdapter(mtoDoListAdap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -70,10 +69,8 @@ public class MainActivity extends AppCompatActivity {
                     changeEmptyList();
                     listItemCounter();
                 }
-
             }
         });
-
 
         setOnClickListeners();
         longPressDelete();
